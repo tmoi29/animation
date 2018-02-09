@@ -8,7 +8,7 @@ var ctx = c.getContext("2d");
 
 var anim_btn = document.getElementById("anim");
 var stop_btn = document.getElementById("stop");
-
+var bump_btn = document.getElementById("bump");
 
 ctx.fillStyle = "#42ddc3";
 
@@ -20,9 +20,13 @@ var clear = function(){
 var r = 20;
 var inc = 0;
 var grow = true;
+var start = true;
 
-var drawCircle = function(){
-    
+var growCircle = function(){
+    if (start){
+        stop();
+        start = false;
+    }
     if ((inc%200) == 0){
         grow = !(grow);
     }
@@ -41,15 +45,49 @@ var drawCircle = function(){
     else{
         r = 220 - inc%200;
     }
-    inc = window.requestAnimationFrame(drawCircle);
+    inc = window.requestAnimationFrame(growCircle);
+    
+};
+
+var x = 300;
+var y = 300;
+var dx = 2;
+var dy = 3;
+var inc1 = 0;
+
+var bumpyCircle = function(){
+    if (start){
+        stop();
+        start = false;
+    }
+    if (x == 0 || x == 600){
+        dx = -1 * dx;
+    }
+    if (y == 0 || y == 600){
+        dy = -1 * dy;
+    }
+
+    clear();
+    ctx.beginPath();
+    ctx.arc(x, y, 40, 0, 2 * Math.PI);
+    ctx.fill();
+    
+    x += dx;
+    y += dy;
+    inc1 = window.requestAnimationFrame(bumpyCircle);
     
 };
 
 var stop = function(){
     window.cancelAnimationFrame(inc);
+    window.cancelAnimationFrame(inc1);
+    console.log(inc);
+    console.log(inc1);
+    start = true;
 };
 
 
-anim_btn.addEventListener("click", drawCircle);
+anim_btn.addEventListener("click", growCircle);
 stop_btn.addEventListener("click", stop);
+bump_btn.addEventListener("click", bumpyCircle);
 
